@@ -1,20 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const {
-  listContacts,
+  getContactsList,
   getContactById,
   addContact,
   updateContact,
+  updateStatusContact,
   removeContact,
 } = require('../../model/index');
 const {
   validateCreateContact,
   validateUpdateContact,
+  validateUpdateStatusContact,
 } = require('./validation');
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (_req, res, next) => {
   try {
-    const contacts = await listContacts();
+    const contacts = await getContactsList();
     return res.status(200).json({
       status: 'success',
       code: 200,
@@ -69,6 +71,29 @@ router.patch('/:contactId', validateUpdateContact, async (req, res, next) => {
     next(err);
   }
 });
+
+router.patch(
+  '/:contactId/favorite',
+  validateUpdateStatusContact,
+  async (req, res, next) => {
+    try {
+      const contactWithId = await updateStatusContact(
+        req.params.contactId,
+        req.body
+      );
+      if (contactWithId) {
+        return res
+          .status(200)
+          .json({ status: 'success', code: 200, data: { contactWithId } });
+      }
+      return res
+        .status(404)
+        .json({ status: 'error', code: 404, message: 'Not found' });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.delete('/:contactId', async (req, res, next) => {
   try {
