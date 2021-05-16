@@ -52,6 +52,9 @@ router.post('/', validateCreateContact, async (req, res, next) => {
       .status(201)
       .json({ status: 'success', code: 201, data: { contact } });
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      err.status = 400;
+    }
     next(err);
   }
 });
