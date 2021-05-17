@@ -87,7 +87,7 @@ router.patch(
       if (contactWithId) {
         return res
           .status(200)
-          .json({ status: 'success', code: 200, data: { contactWithId } });
+          .json({ status: 'success', code: 200, data: contactWithId });
       }
       return res
         .status(404)
