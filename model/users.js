@@ -1,7 +1,7 @@
 const User = require('./schema/user');
 
-const findById = async (contactId) => {
-  return await User.findOne({ _id: contactId });
+const findById = async (id) => {
+  return await User.findOne({ _id: id });
 };
 
 const findByEmail = async (email) => {
@@ -13,8 +13,8 @@ const create = async (options) => {
   return await user.save();
 };
 
-const updateToken = async (contactId, token) => {
-  return await User.updateOne({ _id: contactId }, { token });
+const updateToken = async (id, token) => {
+  return await User.updateOne({ _id: id }, { token });
 };
 
 module.exports = {
