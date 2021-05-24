@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const bcrypt = require('bcryptjs');
 const { Subscription } = require('../../helpers/constants');
-const SALT_FACTOR = 6;
+const SALT_FACTOR = 8;
 
 const userSchema = new Schema(
   {
