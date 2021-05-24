@@ -8,8 +8,9 @@ const {
 } = require('../model/index');
 const { HttpCode } = require('../helpers/constants');
 
-const getAllContacts = async (_req, res, next) => {
+const getAllContacts = async (req, res, next) => {
   try {
+    console.log(req.user);
     const contacts = await getContactsList();
     return res.status(HttpCode.OK).json({
       status: 'success',

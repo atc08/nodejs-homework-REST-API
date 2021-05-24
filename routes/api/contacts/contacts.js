@@ -8,27 +8,28 @@ const {
   // updateContactStatus,
   deleteContact,
 } = require('../../../controllers/contacts');
-
+const guard = require('../../../helpers/guard');
 const {
   validateCreateContact,
   validateUpdateContact,
   validateUpdateStatusContact,
 } = require('./validation');
 
-router.get('/', getAllContacts);
+router.get('/', guard, getAllContacts);
 
-router.get('/:contactId', getByContactId);
+router.get('/:contactId', guard, getByContactId);
 
-router.post('/', validateCreateContact, createContact);
+router.post('/', guard, validateCreateContact, createContact);
 
-router.patch('/:contactId', validateUpdateContact, updateContactInfo);
+router.patch('/:contactId', guard, validateUpdateContact, updateContactInfo);
 
 router.patch(
   '/:contactId/favorite',
+  guard,
   validateUpdateStatusContact,
   updateContactInfo
 );
 
-router.delete('/:contactId', deleteContact);
+router.delete('/:contactId', guard, deleteContact);
 
 module.exports = router;
