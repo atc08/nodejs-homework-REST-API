@@ -13,7 +13,15 @@ const getContactsList = async (userId, query) => {
   if (favorite !== null) {
     optionsSearch.favorite = favorite;
   }
-  const results = await Contact.paginate(optionsSearch, { limit, offset });
+  const results = await Contact.paginate(optionsSearch, {
+    limit,
+    offset,
+    select: filter ? filter.split('|').join(' ') : '',
+    sort: {
+      ...(sortBy ? { [`${sortBy}`]: 1 } : {}),
+      ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
+    },
+  });
   const { docs: contacts, totalDocs: total } = results;
   return { contacts, total, limit, offset };
 };
