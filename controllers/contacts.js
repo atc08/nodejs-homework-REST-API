@@ -3,7 +3,7 @@ const {
   getContactById,
   addContact,
   updateContact,
-  // updateStatusContact,
+  updateStatusContact,
   removeContact,
 } = require('../model/index');
 const { HttpCode } = require('../helpers/constants');
@@ -91,26 +91,30 @@ const updateContactInfo = async (req, res, next) => {
   }
 };
 
-// const updateContactStatus = async (req, res, next) => {
-//   try {
-// const userId = req.user.id;
-//     const contactWithId = await updateStatusContact(
-//       userId,
-//       req.params.contactId,
-//       req.body
-//     );
-//     if (contactWithId) {
-//       return res
-//         .status(HttpCode.OK)
-//         .json({ status: 'success', code: HttpCode.OK, data: contactWithId });
-//     }
-//     return res
-//       .status(HttpCode.NOT_FOUND)
-//       .json({ status: 'error', code: HttpCode.NOT_FOUND, message: 'Not found' });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+const updateContactStatus = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const contactWithId = await updateStatusContact(
+      userId,
+      req.params.contactId,
+      req.body
+    );
+    if (contactWithId) {
+      return res
+        .status(HttpCode.OK)
+        .json({ status: 'success', code: HttpCode.OK, data: contactWithId });
+    }
+    return res
+      .status(HttpCode.NOT_FOUND)
+      .json({
+        status: 'error',
+        code: HttpCode.NOT_FOUND,
+        message: 'Not found',
+      });
+  } catch (err) {
+    next(err);
+  }
+};
 
 const deleteContact = async (req, res, next) => {
   try {
@@ -138,6 +142,6 @@ module.exports = {
   getByContactId,
   createContact,
   updateContactInfo,
-  // updateContactStatus,
+  updateContactStatus,
   deleteContact,
 };

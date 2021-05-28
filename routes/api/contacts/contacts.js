@@ -5,7 +5,7 @@ const {
   getByContactId,
   createContact,
   updateContactInfo,
-  // updateContactStatus,
+  updateContactStatus,
   deleteContact,
 } = require('../../../controllers/contacts');
 const guard = require('../../../helpers/guard');
@@ -27,7 +27,7 @@ router.patch(
   '/:contactId/favorite',
   guard,
   validateUpdateStatusContact,
-  updateContactInfo
+  updateContactStatus
 );
 
 router.delete('/:contactId', guard, deleteContact);

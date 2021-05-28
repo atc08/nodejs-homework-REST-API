@@ -4,12 +4,14 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const {
   // findById,
   findByEmail,
+  findByToken,
   create,
   updateToken,
+  updateSubscription,
 } = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
 
-const registration = async (req, res, next) => {
+const signup = async (req, res, next) => {
   try {
     const user = await findByEmail(req.body.email);
     if (user) {
@@ -64,13 +66,71 @@ const login = async (req, res, next) => {
   }
 };
 
-const logout = async (req, res, next) => {
+const logout = async (req, res, _next) => {
   await updateToken(req.user.id, null);
   return res.status(HttpCode.NO_CONTENT).json({});
 };
 
+const currentUser = async (req, res, next) => {
+  try {
+    const userToken = req.user.token;
+    const { name, email, subscription } = req.user;
+    const curUser = await findByToken(userToken);
+    console.log(name, email, subscription);
+    if (curUser) {
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        data: {
+          name,
+          email,
+          subscription,
+        },
+      });
+    }
+    return res.status(HttpCode.UNAUTHORIZED).json({
+      status: 'error',
+      code: HttpCode.UNAUTHORIZED,
+      message: 'Not authorized',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const userSubscription = async (req, res, next) => {
+  try {
+    const userToken = req.user.token;
+    const userSubscr = await updateSubscription(userToken, req.body);
+    const { name, email, subscription } = req.user;
+    req.user = userSubscr;
+    console.log(name, email, subscription);
+    // console.log(req.user);
+    if (userSubscr) {
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        data: {
+          name,
+          email,
+          subscription,
+        },
+      });
+    }
+    return res.status(HttpCode.UNAUTHORIZED).json({
+      status: 'error',
+      code: HttpCode.UNAUTHORIZED,
+      message: 'Not authorized',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
-  registration,
+  signup,
   login,
   logout,
+  currentUser,
+  userSubscription,
 };
