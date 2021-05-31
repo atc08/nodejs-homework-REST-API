@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const {
-  // findById,
   findByEmail,
   findByToken,
   create,
@@ -76,7 +75,6 @@ const currentUser = async (req, res, next) => {
     const userToken = req.user.token;
     const { name, email, subscription } = req.user;
     const curUser = await findByToken(userToken);
-    console.log(name, email, subscription);
     if (curUser) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -101,11 +99,8 @@ const currentUser = async (req, res, next) => {
 const userSubscription = async (req, res, next) => {
   try {
     const userToken = req.user.token;
-    const userSubscr = await updateSubscription(userToken, req.body);
     const { name, email, subscription } = req.user;
-    req.user = userSubscr;
-    console.log(name, email, subscription);
-    // console.log(req.user);
+    const userSubscr = await updateSubscription(userToken, req.body);
     if (userSubscr) {
       return res.status(HttpCode.OK).json({
         status: 'success',

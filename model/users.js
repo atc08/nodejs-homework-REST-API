@@ -22,7 +22,7 @@ const updateToken = async (id, token) => {
 };
 
 const updateSubscription = async (token, body) => {
-  return await User.updateOne({ token }, { ...body }, { new: true });
+  return await User.updateOne({ token }, body, { new: true });
 };
 
 module.exports = {
