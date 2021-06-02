@@ -99,7 +99,7 @@ const currentUser = async (req, res, next) => {
 const userSubscription = async (req, res, next) => {
   try {
     const userToken = req.user.token;
-    const { name, email, subscription } = req.user;
+    const { name, email, subscription, avatar } = req.user;
     const userSubscr = await updateSubscription(userToken, req.body);
     if (userSubscr) {
       return res.status(HttpCode.OK).json({
@@ -109,6 +109,7 @@ const userSubscription = async (req, res, next) => {
           name,
           email,
           subscription,
+          avatar,
         },
       });
     }
@@ -122,10 +123,19 @@ const userSubscription = async (req, res, next) => {
   }
 };
 
+const avatars = async (req, res, next) => {
+  try {
+    return res.json({});
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   signup,
   login,
   logout,
   currentUser,
   userSubscription,
+  avatars,
 };
