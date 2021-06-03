@@ -25,6 +25,10 @@ const updateSubscription = async (token, body) => {
   return await User.updateOne({ token }, body, { new: true });
 };
 
+const updateAvatar = async (id, avatar, userIdImg = null) => {
+  return await User.updateOne({ _id: id }, { avatar, userIdImg });
+};
+
 module.exports = {
   findById,
   findByEmail,
@@ -32,4 +36,5 @@ module.exports = {
   create,
   updateToken,
   updateSubscription,
+  updateAvatar,
 };

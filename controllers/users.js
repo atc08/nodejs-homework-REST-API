@@ -1,14 +1,27 @@
 const jwt = require('jsonwebtoken');
+const cloudinary = require('cloudinary').v2;
+const { promisify } = require('util');
+
 require('dotenv').config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+// const AVATAR_OF_USERS = process.env.AVATAR_OF_USERS;
 const {
   findByEmail,
   findByToken,
   create,
   updateToken,
   updateSubscription,
+  updateAvatar,
 } = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
+// const UploadAvatar = require('../services/upload-avatars-local');
+const UploadAvatar = require('../services/upload-avatars-cloud');
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 
 const signup = async (req, res, next) => {
   try {
@@ -125,7 +138,34 @@ const userSubscription = async (req, res, next) => {
 
 const avatars = async (req, res, next) => {
   try {
-    return res.json({});
+    // const path = req.file.path;
+    // const id = req.user.id;
+    // const filename = req.user.filename;
+    // const avatar = req.user.avatar;
+
+    const { id } = req.user;
+    // const { path, filename } = req.file;
+
+    // const uploads = new UploadAvatar(AVATAR_OF_USERS);
+
+    // const avatarUrl = await uploads.saveAvatarToStatic({
+    //   idUser: id,
+    //   pathFile: req.file.path,
+    //   name: req.file.filename,
+    //   oldFile: req.user.avatar,
+    // });
+    const uploadCloud = promisify(cloudinary.uploader.upload);
+    const uploads = new UploadAvatar(uploadCloud);
+    const { userIdImg, avatarUrl } = await uploads.saveAvatarToCloud(
+      req.file.path,
+      req.user.userIdImg
+    );
+    await updateAvatar(id, userIdImg, avatarUrl);
+    return res.json({
+      status: 'success',
+      code: HttpCode.OK,
+      data: { avatarUrl },
+    });
   } catch (err) {
     next(err);
   }
