@@ -29,8 +29,6 @@ class Upload {
       path.join(process.cwd(), this.AVATARS_OF_USERS, oldFile)
     );
     const avatarUrl = path.normalize(path.join(idUser, name));
-    console.log(idUser);
-    console.log(pathFile);
     return avatarUrl;
   }
 

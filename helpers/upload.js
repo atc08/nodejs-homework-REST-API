@@ -21,7 +21,6 @@ const upload = multer({
       cb(null, false);
       return;
     }
-
     cb(null, true);
   },
 });
