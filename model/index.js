@@ -79,3 +79,5 @@ module.exports = {
   updateStatusContact,
   removeContact,
 };
+
+// module.exports = Contacts;

@@ -1,14 +1,30 @@
 const jwt = require('jsonwebtoken');
+// const cloudinary = require('cloudinary').v2; // for CLOUD AVATAR
+// const { promisify } = require('util'); // for CLOUD AVATAR
+
 require('dotenv').config();
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
 const {
   findByEmail,
   findByToken,
   create,
   updateToken,
   updateSubscription,
+  updateAvatar,
 } = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
+const UploadAvatar = require('../services/upload-avatars-local');
+// const UploadAvatar = require('../services/upload-avatar-cloud');
+
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const AVATAR_OF_USERS = process.env.AVATAR_OF_USERS; // comment for CLOUD AVATAR
+
+//             FOR CLOUD AVATAR
+// cloudinary.config({
+//   cloud_name: process.env.CLOUD_NAME,
+//   api_key: process.env.API_KEY,
+//   api_secret: process.env.API_SECRET,
+// });
 
 const signup = async (req, res, next) => {
   try {
@@ -21,7 +37,7 @@ const signup = async (req, res, next) => {
       });
     }
     const newUser = await create(req.body);
-    const { id, name, email, subscription } = newUser;
+    const { id, name, email, subscription, avatar } = newUser;
     return res.status(HttpCode.CREATED).json({
       status: 'success',
       code: HttpCode.CREATED,
@@ -30,6 +46,7 @@ const signup = async (req, res, next) => {
         name,
         email,
         subscription,
+        avatar,
       },
     });
   } catch (err) {
@@ -99,7 +116,7 @@ const currentUser = async (req, res, next) => {
 const userSubscription = async (req, res, next) => {
   try {
     const userToken = req.user.token;
-    const { name, email, subscription } = req.user;
+    const { name, email, subscription, avatar } = req.user;
     const userSubscr = await updateSubscription(userToken, req.body);
     if (userSubscr) {
       return res.status(HttpCode.OK).json({
@@ -109,6 +126,7 @@ const userSubscription = async (req, res, next) => {
           name,
           email,
           subscription,
+          avatar,
         },
       });
     }
@@ -122,10 +140,47 @@ const userSubscription = async (req, res, next) => {
   }
 };
 
+const avatars = async (req, res, next) => {
+  try {
+    //           FOR LOCAL AVATAR
+    const id = req.user.id;
+
+    const uploads = new UploadAvatar(AVATAR_OF_USERS);
+
+    const avatarUrl = await uploads.saveAvatarToStatic({
+      idUser: id,
+      pathFile: req.file.path,
+      name: req.file.filename,
+      oldFile: req.user.avatar,
+    });
+
+    //             FOR CLOUD AVATAR
+    // const id = req.user.id;
+    // const uploadCloud = promisify(cloudinary.uploader.upload);
+    // const uploads = new UploadAvatar(uploadCloud);
+    // const { userIdImg, avatarUrl } = await uploads.saveAvatarToCloud(
+    //   req.file.path,
+    //   req.user.userIdImg
+    // );
+    // await updateAvatar(id, avatarUrl, userIdImg);
+    //
+
+    await updateAvatar(id, avatarUrl); // FOR LOCAL AVATAR
+    return res.json({
+      status: 'success',
+      code: HttpCode.OK,
+      data: { avatarUrl },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   signup,
   login,
   logout,
   currentUser,
   userSubscription,
+  avatars,
 };
