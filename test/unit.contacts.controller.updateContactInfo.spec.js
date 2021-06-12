@@ -1,5 +1,6 @@
-const { updateContactInfo } = require('../controllers/contacts');
+const { createContact, updateContactInfo } = require('../controllers/contacts');
 const Contacts = require('../model/index');
+const { newContact } = require('./data/data');
 
 jest.mock('../model/index');
 

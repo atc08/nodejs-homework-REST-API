@@ -28,10 +28,16 @@ const contactSchema = new Schema(
   {
     versionKey: false,
     timestamps: true,
-    toObject: { virtuals: true },
+    toObject: {
+      virtuals: true,
+      transform: function (doc, ret) {
+        delete ret._id;
+        return ret;
+      },
+    },
     toJSON: {
       virtuals: true,
-      transform: function (_doc, ret) {
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.fullInf;
         return ret;
@@ -41,7 +47,7 @@ const contactSchema = new Schema(
 );
 
 contactSchema.virtual('fullInf').get(function () {
-  return `This is ${this.name} phone number ${this.phone}`;
+  return `The phone number of ${this.name} is ${this.phone}`;
 });
 
 contactSchema.path('name').validate((value) => {
