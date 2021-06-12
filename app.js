@@ -21,7 +21,7 @@ const AVATAR_OF_USERS = process.env.AVATAR_OF_USERS;
 app.use(express.static(path.join(__dirname, AVATAR_OF_USERS)));
 
 app.use(limiter);
-app.use(logger(formatsLogger));
+app.get('env') !== 'test' && app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json({ limit: 15000 }));
 app.use(boolParser());

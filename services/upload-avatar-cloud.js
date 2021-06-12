@@ -1,30 +1,30 @@
-// const fs = require('fs/promises');
+const fs = require('fs/promises');
 
-// class Upload {
-//   constructor(uploadCloud) {
-//     this.uploadCloud = uploadCloud;
-//   }
+class Upload {
+  constructor(uploadCloud) {
+    this.uploadCloud = uploadCloud;
+  }
 
-//   async saveAvatarToCloud(pathFile, userIdImg) {
-//     const { public_id: publicId, secure_url: avatar } = await this.uploadCloud(
-//       pathFile,
-//       {
-//         public_id: userIdImg?.replace('Photo/', ''),
-//         folder: 'Photo',
-//         transformation: { width: 250, crop: 'pad' },
-//       }
-//     );
-//     await this.deleteTemporaryFile(pathFile);
-//     return { userIdImg: publicId, avatarUrl: avatar };
-//   }
+  async saveAvatarToCloud(pathFile, userIdImg) {
+    const { public_id: publicId, secure_url: avatar } = await this.uploadCloud(
+      pathFile,
+      {
+        public_id: userIdImg?.replace('Photo/', ''),
+        folder: 'Photo',
+        transformation: { width: 250, crop: 'pad' },
+      }
+    );
+    await this.deleteTemporaryFile(pathFile);
+    return { userIdImg: publicId, avatarUrl: avatar };
+  }
 
-//   async deleteTemporaryFile(pathFile) {
-//     try {
-//       await fs.unlink(pathFile);
-//     } catch (err) {
-//       console.error(err.message);
-//     }
-//   }
-// }
+  async deleteTemporaryFile(pathFile) {
+    try {
+      await fs.unlink(pathFile);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+}
 
-// module.exports = Upload;
+module.exports = Upload;

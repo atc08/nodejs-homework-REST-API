@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const mongoose = require('mongoose');
 const { HttpCode } = require('../../../helpers/constants');
 
 const schemaCreateContact = Joi.object({
@@ -23,8 +24,8 @@ const schemaUpdateContact = Joi.object({
     .regex(/[A-Z]\w+/)
     .min(2)
     .max(30)
-    .required(),
-  phone: Joi.string().min(7).max(30).required(),
+    .optional(),
+  phone: Joi.string().min(7).max(30).optional(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
@@ -56,4 +57,14 @@ module.exports.validateUpdateContact = (req, _res, next) => {
 
 module.exports.validateUpdateStatusContact = (req, _res, next) => {
   return validate(schemaUpdateStatusContact, req.body, next);
+};
+
+module.exports.validateObjectId = (req, _res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.contactId)) {
+    return next({
+      status: HttpCode.BAD_REQUEST,
+      message: 'ObjectId is not valid',
+    });
+  }
+  next();
 };
