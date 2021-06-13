@@ -17,9 +17,9 @@ const db = mongoose.connect(uriDb, {
   poolSize: 5,
 });
 
-// mongoose.connection.on('connected', () => {
-//   console.log('Mongoose connected to DB');
-// });
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose connected to DB');
+});
 
 mongoose.connection.on('error', (err) => {
   console.log(`Mongoose connected error: ${err.message}`);

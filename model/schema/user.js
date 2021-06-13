@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const { Schema, model } = require('mongoose');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 const { Subscription } = require('../../helpers/constants');
 const SALT_FACTOR = 8;
 
@@ -46,6 +46,15 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verifyToken: {
+      type: String,
+      required: true,
+      default: uuidv4(),
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -62,6 +71,6 @@ userSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(String(password), this.password);
 };
 
-const User = mongoose.model('user', userSchema);
+const User = model('user', userSchema);
 
 module.exports = User;
