@@ -34,7 +34,7 @@ class EmailService {
           instructions:
             'To get started with System Contacts, please click here:',
           button: {
-            color: '#22BC66', // Optional action button color
+            color: '#22BC66',
             text: 'Confirm your account',
             link: `${this.link}/api/users/verify/${token}`,
           },
@@ -42,7 +42,6 @@ class EmailService {
       },
     };
 
-    // Generate an HTML email with the provided contents
     return mailGenerator.generate(email);
   }
 
