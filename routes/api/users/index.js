@@ -7,6 +7,8 @@ const {
   currentUser,
   userSubscription,
   avatars,
+  verify,
+  repeatSendEmailVerify,
 } = require('../../../controllers/users');
 const guard = require('../../../helpers/guard');
 const upload = require('../../../helpers/upload');
@@ -16,6 +18,8 @@ const {
   validateUpdateUserSubscription,
 } = require('./validation');
 
+router.get('/verify/:token', verify);
+router.post('/verify', repeatSendEmailVerify);
 router.post('/signup', validateSignupUser, signup);
 router.post('/login', validateLoginUser, login);
 router.post('/logout', guard, logout);
